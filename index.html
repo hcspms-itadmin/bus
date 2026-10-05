@@ -105,23 +105,19 @@
     </div>
 
     <script>
-        // 設定監控的路線
         var CTB_ROUTES = ["E11B", "E21A", "E22S", "S52"];
         var NLB_ROUTES = ["37M", "39M", "B6"];
 
-        // 計算剩餘分鐘
         function getMinutesDiff(etaTimeString) {
             if (!etaTimeString) return "無班次";
             var now = new Date();
             var etaTime = new Date(etaTimeString);
             var diffMs = etaTime - now;
             var diffMins = Math.ceil(diffMs / 1000 / 60);
-            
             if (diffMins <= 0) return "即將抵站";
             return diffMins + " 分鐘";
         }
 
-        // 格式化顯示時間 (HH:MM)
         function formatLocalTime(etaTimeString) {
             if (!etaTimeString) return "--:--";
             var date = new Date(etaTimeString);
@@ -131,11 +127,9 @@
         async function fetchETA() {
             var combinedData = [];
 
-            // --- 1. 抓取城巴 (CTB) 數據 ---
+            // --- 1. 抓取城巴數據 (一條過寫死正確完整 URL，內含 rt.) ---
             try {
-                // 直接寫死包含滿東邨站點 ID (003541) 的完整 API URL 
-                var ctbUrl = "https://data.gov.hk";
-                var ctbResponse = await fetch(ctbUrl);
+                var ctbResponse = await fetch("https://data.gov.hk");
                 var ctbJson = await ctbResponse.json();
                 
                 if (ctbJson && ctbJson.data) {
@@ -159,11 +153,9 @@
                 console.error("獲取城巴 API 失敗:", e);
             }
 
-            // --- 2. 抓取新大嶼山巴士 (NLB) 數據 ---
+            // --- 2. 抓取新大嶼山巴士數據 (一條過寫死正確完整 URL，內含 rt.) ---
             try {
-                // 直接寫死包含滿東邨站點 ID (164) 的完整 API URL
-                var nlbUrl = "https://data.gov.hk";
-                var nlbResponse = await fetch(nlbUrl);
+                var nlbResponse = await fetch("https://data.gov.hk");
                 var nlbJson = await nlbResponse.json();
                 
                 if (nlbJson && nlbJson.estimatedArrivals) {
@@ -187,13 +179,11 @@
                 console.error("獲取新大嶼山巴士 API 失敗:", e);
             }
 
-            // --- 3. 渲染畫面 ---
             renderBoard(combinedData);
         }
 
         function renderBoard(data) {
             var boardHtml = "";
-
             if (data.length === 0) {
                 document.getElementById('bus-board').innerHTML = "<div class='loading'>暫時未能獲取任何巴士到站數據。</div>";
                 return;
@@ -227,10 +217,7 @@
             document.getElementById('update-time').innerText = "最後更新時間: " + new Date().toLocaleTimeString();
         }
 
-        // 初始化執行
         fetchETA();
-
-        // 每 30 秒自動重新整理數據
         setInterval(fetchETA, 30000);
     </script>
 </body>
