@@ -1,0 +1,161 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--tfl-bg-canvas);
+  border: var(--tfl-border-card) solid var(--tfl-border-color);
+  border-radius: var(--tfl-radius);
+  box-shadow: none;
+}
+
+.card + .card {
+  margin-top: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 16px 12px;
+  border-bottom: var(--tfl-border-card) solid var(--tfl-border-color);
+}
+
+.routeLine {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+
+.routeNo {
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.destBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  height: 46px;
+  justify-content: center;
+}
+
+.dest {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.from {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tfl-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hint {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 1px 6px;
+  border: 1px solid var(--tfl-text-muted);
+  border-radius: var(--tfl-radius);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tfl-text-muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.message {
+  padding: 18px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tfl-text-muted);
+  border-left: 1px solid rgba(34, 34, 34, 0.25);
+}
+
+.skeleton {
+  height: 56px;
+  margin: 0;
+  padding: 8px 16px;
+  border-left: 1px solid rgba(34, 34, 34, 0.25);
+  background:
+    linear-gradient(100deg, transparent 30%, rgba(34, 34, 34, 0.08) 50%, transparent 70%) 0 0 / 200% 100%
+      no-repeat var(--tfl-bg-subtle);
+  animation: shimmer 1.4s linear infinite;
+  list-style: none;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Kiosk / 橫置大屏：放大顯示 */
+@media (min-width: 1024px) and (orientation: landscape) {
+  .card + .card {
+    margin-top: 20px;
+  }
+
+  .header {
+    padding: 20px 24px 16px;
+  }
+
+  .routeNo {
+    font-size: 72px;
+  }
+
+  .destBlock {
+    height: 64px;
+  }
+
+  .dest {
+    font-size: 34px;
+  }
+
+  .from {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .routeNo {
+    font-size: 34px;
+  }
+
+  .routeLine {
+    gap: 8px;
+  }
+
+  .destBlock {
+    height: 36px;
+  }
+
+  .dest {
+    font-size: 18px;
+  }
+
+  .from {
+    font-size: 12px;
+  }
+}

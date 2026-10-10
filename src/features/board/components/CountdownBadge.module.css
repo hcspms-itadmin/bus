@@ -1,0 +1,65 @@
+.badge {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25em;
+  flex: none;
+  min-width: 64px;
+  height: 40px;
+  padding: 0 10px;
+  border: var(--tfl-border-inner) solid var(--tfl-blue);
+  border-radius: var(--tfl-radius);
+}
+
+.badge[data-tier='urgent'] {
+  background: var(--tfl-blue);
+  border-color: var(--tfl-blue);
+}
+
+.badge[data-tier='normal'] {
+  background: var(--tfl-blue-bg);
+}
+
+.badge[data-tier='scheduled'] {
+  background: var(--tfl-bg-subtle);
+  border: 1.5px dashed var(--tfl-scheduled-gray);
+}
+
+.num {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge[data-tier='urgent'] .num {
+  color: #fff;
+}
+
+.badge[data-tier='normal'] .num {
+  color: var(--tfl-blue);
+}
+
+.badge[data-tier='scheduled'] .num {
+  color: var(--tfl-scheduled-gray);
+}
+
+.unit {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: var(--tfl-blue);
+}
+
+.badge[data-tier='urgent'] .unit {
+  color: #fff;
+}
+
+.tag {
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--tfl-scheduled-gray);
+}

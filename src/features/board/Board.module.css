@@ -1,0 +1,51 @@
+.board {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--board-max);
+  margin: 0 auto;
+  border-left: var(--tfl-border-card) solid var(--tfl-border-color);
+  border-right: var(--tfl-border-card) solid var(--tfl-border-color);
+  background: var(--tfl-bg-canvas);
+}
+
+.main {
+  flex: 1 1 auto;
+  padding: 20px calc(24px + var(--safe-right)) 0 calc(24px + var(--safe-left));
+  padding-bottom: calc(24px + var(--safe-bottom));
+}
+
+.footer {
+  padding: 14px 24px calc(14px + var(--safe-bottom));
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tfl-text-muted);
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .board {
+    border-left: none;
+    border-right: none;
+  }
+
+  .main {
+    padding: 14px 12px calc(20px + var(--safe-bottom));
+  }
+
+  .footer {
+    padding: 12px 16px;
+    font-size: 11px;
+  }
+}
+
+/* Kiosk / 橫置大屏 */
+@media (min-width: 1024px) and (orientation: landscape) {
+  .main {
+    padding-top: 28px;
+  }
+
+  .footer {
+    font-size: 14px;
+  }
+}

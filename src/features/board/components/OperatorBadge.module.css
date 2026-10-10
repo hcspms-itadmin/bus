@@ -1,0 +1,26 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 54px;
+  height: 26px;
+  padding: 0 8px;
+  border: var(--tfl-border-inner) solid var(--tfl-border-color);
+  border-radius: var(--tfl-radius);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.badge[data-op='CTB'] {
+  background: var(--color-ctb);
+  color: #000;
+}
+
+.badge[data-op='NLB'] {
+  background: var(--color-nlb);
+  color: #fff;
+}
