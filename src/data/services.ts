@@ -1,6 +1,13 @@
 export type Operator = 'CTB' | 'NLB' | 'KMB'
 export type ServiceSection = 'departures' | 'arrivals'
 
+/**
+ * 出行意圖（手機分流 Tabs 用）：
+ * mrt = 東涌站接駁（39M）；city = 市區長途；special = 口岸/特別線。
+ * （37M 經實測唔停滿東邨，已剔除，故 mrt 得 39M 一條。）
+ */
+export type ServiceIntent = 'mrt' | 'city' | 'special'
+
 /** 九巴（etabus route-eta）以 (serviceType, dir, seq) 定位分站。 */
 export interface KmbQuery {
   serviceType: string
@@ -13,6 +20,7 @@ export interface ServiceConfig {
   operator: Operator
   route: string
   section: ServiceSection
+  intent: ServiceIntent
   displayDest: string
   displayFrom?: string
   stopId: string
@@ -37,6 +45,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'CTB',
     route: 'E11B',
     section: 'departures',
+    intent: 'city',
     displayDest: '天后站',
     stopId: '001363',
     destFilter: ['天后'],
@@ -46,6 +55,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'CTB',
     route: 'E11S',
     section: 'departures',
+    intent: 'city',
     displayDest: '天后站',
     stopId: '001363',
     destFilter: ['天后'],
@@ -56,6 +66,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'CTB',
     route: 'E22S',
     section: 'departures',
+    intent: 'city',
     displayDest: '寶琳',
     stopId: '001363',
     destFilter: ['寶琳'],
@@ -66,6 +77,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'CTB',
     route: 'E21X',
     section: 'departures',
+    intent: 'city',
     displayDest: '紅磡站',
     stopId: '001363',
     destFilter: ['紅磡'],
@@ -76,6 +88,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'CTB',
     route: 'E21A',
     section: 'departures',
+    intent: 'city',
     displayDest: '何文田',
     stopId: '001870',
     destFilter: ['何文田'],
@@ -85,6 +98,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'NLB',
     route: 'B6',
     section: 'departures',
+    intent: 'special',
     displayDest: '港珠澳大橋香港口岸',
     stopId: '309',
     nlbRouteId: '89',
@@ -95,6 +109,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'NLB',
     route: '39M',
     section: 'departures',
+    intent: 'mrt',
     displayDest: '東涌站（循環）',
     stopId: '309',
     nlbRouteId: '95',
@@ -105,6 +120,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'NLB',
     route: '36X',
     section: 'departures',
+    intent: 'special',
     displayDest: '迪士尼樂園',
     stopId: '309',
     nlbRouteId: '100',
@@ -116,6 +132,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'KMB',
     route: 'E31',
     section: 'departures',
+    intent: 'city',
     displayDest: '東涌（逸東）',
     stopId: '56925C75ED35CF99',
     kmbQueries: [{ serviceType: '1', dir: 'O', seq: 16 }],
@@ -126,6 +143,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'KMB',
     route: 'E31',
     section: 'departures',
+    intent: 'city',
     displayDest: '荃灣（愉景新城）',
     stopId: '90551F12E553D27E',
     kmbQueries: [{ serviceType: '1', dir: 'I', seq: 3 }],
@@ -136,6 +154,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'KMB',
     route: 'E36A',
     section: 'departures',
+    intent: 'city',
     displayDest: '東涌（逸東）',
     stopId: '56925C75ED35CF99',
     kmbQueries: [{ serviceType: '1', dir: 'O', seq: 21 }],
@@ -146,6 +165,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'KMB',
     route: 'E36A',
     section: 'departures',
+    intent: 'city',
     displayDest: '元朗（德業街）',
     stopId: '90551F12E553D27E',
     kmbQueries: [{ serviceType: '1', dir: 'I', seq: 3 }],
@@ -156,6 +176,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'KMB',
     route: 'N31',
     section: 'departures',
+    intent: 'city',
     displayDest: '機場（地面運輸中心）',
     stopId: '56925C75ED35CF99',
     kmbQueries: [{ serviceType: '1', dir: 'O', seq: 19 }],
@@ -167,6 +188,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'KMB',
     route: 'N31',
     section: 'departures',
+    intent: 'city',
     displayDest: '荃灣（愉景新城）',
     stopId: '90551F12E553D27E',
     kmbQueries: [{ serviceType: '1', dir: 'I', seq: 11 }],
@@ -178,6 +200,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'KMB',
     route: 'S64X',
     section: 'departures',
+    intent: 'special',
     displayDest: '機場（循環線）',
     stopId: '90551F12E553D27E',
     kmbQueries: [
@@ -191,6 +214,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'NLB',
     route: '37H',
     section: 'arrivals',
+    intent: 'special',
     displayDest: '北大嶼山醫院（循環）',
     stopId: '310',
     nlbRouteId: '96',
@@ -201,6 +225,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'NLB',
     route: 'B6',
     section: 'arrivals',
+    intent: 'special',
     displayDest: '滿東邨',
     displayFrom: '港珠澳大橋香港口岸',
     stopId: '310',
@@ -212,6 +237,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'CTB',
     route: 'E11B',
     section: 'arrivals',
+    intent: 'city',
     displayDest: '東涌（滿東邨）',
     displayFrom: '天后站',
     stopId: '001363',
@@ -222,6 +248,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'CTB',
     route: 'E21A',
     section: 'arrivals',
+    intent: 'city',
     displayDest: '東涌（逸東邨）',
     displayFrom: '何文田',
     stopId: '001853',
@@ -232,6 +259,7 @@ export const SERVICES: readonly ServiceConfig[] = [
     operator: 'KMB',
     route: 'S64X',
     section: 'arrivals',
+    intent: 'special',
     displayDest: '滿東邨',
     displayFrom: '機場（循環線）',
     stopId: '90551F12E553D27E',

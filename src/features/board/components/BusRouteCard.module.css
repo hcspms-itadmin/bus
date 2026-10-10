@@ -81,9 +81,29 @@
   border-radius: var(--tfl-radius);
   font-size: 11px;
   font-weight: 700;
-  line-height: 1.1; /* 限制標籤自身的行高，避免向外膨脹 */
+  line-height: 1.1;
   color: var(--tfl-text-muted);
-  white-space: nowrap; /* 標籤本體保持一行 */
+  white-space: nowrap;
+}
+
+.pin {
+  flex: none;
+  align-self: flex-start;
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  border: var(--tfl-border-inner) solid var(--tfl-border-color);
+  border-radius: var(--tfl-radius);
+  background: var(--tfl-bg-canvas);
+  color: var(--tfl-text-black);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.pin[data-pinned='true'] {
+  background: var(--tfl-blue);
+  border-color: var(--tfl-blue);
+  color: #fff;
 }
 
 .list {

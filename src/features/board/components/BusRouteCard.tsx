@@ -8,9 +8,11 @@ export interface BusRouteCardProps {
   snapshot: ServiceSnapshot | undefined
   service: ServiceConfig
   now: number
+  pinned: boolean
+  onTogglePin: () => void
 }
 
-export function BusRouteCard({ snapshot, service, now }: BusRouteCardProps) {
+export function BusRouteCard({ snapshot, service, now, pinned, onTogglePin }: BusRouteCardProps) {
   const etas = snapshot?.etas ?? []
   const status = snapshot?.status ?? 'loading'
 
@@ -32,6 +34,17 @@ export function BusRouteCard({ snapshot, service, now }: BusRouteCardProps) {
             </div>
           )}
         </div>
+        <button
+          type="button"
+          className={styles.pin}
+          data-pinned={pinned}
+          aria-pressed={pinned}
+          aria-label={pinned ? `取消釘選 ${service.route}` : `釘選 ${service.route} 到常用`}
+          title={pinned ? '取消釘選' : '釘選到常用'}
+          onClick={onTogglePin}
+        >
+          {pinned ? '★' : '☆'}
+        </button>
       </header>
 
       {status === 'error' && (

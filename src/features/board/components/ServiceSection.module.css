@@ -22,6 +22,26 @@
   color: var(--tfl-text-muted);
 }
 
+.drawer {
+  margin-top: 16px;
+  border: var(--tfl-border-inner) dashed var(--tfl-scheduled-gray);
+  border-radius: var(--tfl-radius);
+  background: var(--tfl-bg-subtle);
+}
+
+.drawerSummary {
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--tfl-scheduled-gray);
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.drawer .grid {
+  padding: 0 12px 12px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));

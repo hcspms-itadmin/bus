@@ -9,6 +9,12 @@
   background: var(--tfl-bg-canvas);
 }
 
+.stickyTop {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
 .main {
   flex: 1 1 auto;
   padding: 20px calc(24px + var(--safe-right)) 0 calc(24px + var(--safe-left));

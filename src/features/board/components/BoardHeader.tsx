@@ -4,9 +4,10 @@ import { formatClock } from '../../../data/time'
 
 export interface BoardHeaderProps {
   refresh: () => void
+  onOpenSettings: () => void
 }
 
-export function BoardHeader({ refresh }: BoardHeaderProps) {
+export function BoardHeader({ refresh, onOpenSettings }: BoardHeaderProps) {
   const { now, lastUpdatedAt } = useEta()
   return (
     <header className={styles.header}>
@@ -24,6 +25,9 @@ export function BoardHeader({ refresh }: BoardHeaderProps) {
           </span>
           <button type="button" className={styles.refresh} onClick={refresh}>
             更新
+          </button>
+          <button type="button" className={styles.refresh} onClick={onOpenSettings}>
+            自訂
           </button>
         </div>
       </div>
