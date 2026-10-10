@@ -15,7 +15,8 @@
 .header {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 8px 16px;
   padding: 14px 16px 12px;
   border-bottom: var(--tfl-border-card) solid var(--tfl-border-color);
 }
@@ -25,6 +26,7 @@
   align-items: center;
   gap: 12px;
   flex: none;
+  min-height: 46px;
 }
 
 .routeNo {
@@ -38,28 +40,32 @@
 .destBlock {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
-  height: 46px;
-  justify-content: center;
+  flex: 1 1 220px;
 }
 
 .dest {
   font-size: 24px;
   font-weight: 700;
   line-height: 1.15;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
 }
 
 .from {
   font-size: 13px;
   font-weight: 500;
   color: var(--tfl-text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .hint {
@@ -120,8 +126,12 @@
     font-size: 72px;
   }
 
+  .routeLine {
+    min-height: 72px;
+  }
+
   .destBlock {
-    height: 64px;
+    flex-basis: 320px;
   }
 
   .dest {
@@ -135,7 +145,7 @@
 
 @media (max-width: 600px) {
   .header {
-    gap: 12px;
+    gap: 6px 12px;
     padding: 12px;
   }
 
@@ -145,10 +155,11 @@
 
   .routeLine {
     gap: 8px;
+    min-height: 34px;
   }
 
   .destBlock {
-    height: 36px;
+    flex-basis: 100%;
   }
 
   .dest {

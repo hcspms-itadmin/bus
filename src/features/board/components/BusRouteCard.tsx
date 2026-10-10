@@ -23,8 +23,14 @@ export function BusRouteCard({ snapshot, service, now }: BusRouteCardProps) {
         </div>
         <div className={styles.destBlock}>
           <span className={styles.dest}>{service.displayDest}</span>
-          {service.displayFrom && <span className={styles.from}>由 {service.displayFrom} 開出</span>}
-          {service.remarkHint && <span className={styles.hint}>{service.remarkHint}</span>}
+          {(service.displayFrom || service.remarkHint) && (
+            <div className={styles.metaRow}>
+              {service.displayFrom && (
+                <span className={styles.from}>由 {service.displayFrom} 開出</span>
+              )}
+              {service.remarkHint && <span className={styles.hint}>{service.remarkHint}</span>}
+            </div>
+          )}
         </div>
       </header>
 
