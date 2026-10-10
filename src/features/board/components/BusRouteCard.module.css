@@ -40,43 +40,50 @@
 .destBlock {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px; /* 給予標籤充分呼吸空間 */
   min-width: 0;
-  flex: 1 1 220px;
+  flex: 1 1 200px;
+  height: auto;
 }
 
 .dest {
   font-size: 24px;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.25; /* 放寬行高，避免中文筆畫穿透底部 */
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .metaRow {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* 放不下時自動換行 */
   align-items: center;
   gap: 4px 8px;
+  flex: none; /* 嚴禁被向上壓縮 */
 }
 
 .from {
   font-size: 13px;
   font-weight: 500;
+  line-height: 1.3;
   color: var(--tfl-text-muted);
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .hint {
   display: inline-flex;
+  align-items: center;
   align-self: flex-start;
-  padding: 1px 6px;
+  padding: 2px 6px;
   border: 1px solid var(--tfl-text-muted);
   border-radius: var(--tfl-radius);
   font-size: 11px;
   font-weight: 700;
+  line-height: 1.1; /* 限制標籤自身的行高，避免向外膨脹 */
   color: var(--tfl-text-muted);
+  white-space: nowrap; /* 標籤本體保持一行 */
 }
 
 .list {
@@ -132,10 +139,12 @@
 
   .destBlock {
     flex-basis: 320px;
+    gap: 8px;
   }
 
   .dest {
     font-size: 34px;
+    line-height: 1.25;
   }
 
   .from {
@@ -145,7 +154,7 @@
 
 @media (max-width: 600px) {
   .header {
-    gap: 6px 12px;
+    gap: 8px 12px;
     padding: 12px;
   }
 
@@ -159,11 +168,13 @@
   }
 
   .destBlock {
-    flex-basis: 100%;
+    flex-basis: 100%; /* 退到下一格，佔滿整行 */
+    gap: 6px;
   }
 
   .dest {
-    font-size: 18px;
+    font-size: 20px;
+    line-height: 1.3;
   }
 
   .from {
