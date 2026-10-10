@@ -1,5 +1,6 @@
 export const CTB_ETA_URL = 'https://rt.data.gov.hk/v2/transport/citybus/eta/CTB'
 export const NLB_ETA_URL = 'https://rt.data.gov.hk/v2/transport/nlb/stop.php'
+export const KMB_ETA_URL = 'https://data.etabus.gov.hk/v1/transport/kmb/route-eta'
 
 export const POLL_INTERVAL_MS = 30_000
 export const POLL_JITTER_MS = 5_000

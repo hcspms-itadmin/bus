@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { normalizeCtb, normalizeNlb } from './normalize'
-import type { CtbEtaRecord, NlbEtaRecord } from './schemas'
+import { normalizeCtb, normalizeKmb, normalizeNlb } from './normalize'
+import type { CtbEtaRecord, KmbEtaRecord, NlbEtaRecord } from './schemas'
 import { SERVICES } from './services'
 
 const T0 = Date.parse('2026-10-09T09:00:00.000Z') // 17:00 HK
@@ -20,6 +20,74 @@ function ctbRow(partial: Partial<CtbEtaRecord>): CtbEtaRecord {
     ...partial,
   }
 }
+
+function kmbRow(partial: Partial<KmbEtaRecord>): KmbEtaRecord {
+  return {
+    co: 'KMB',
+    route: 'E31',
+    dir: 'O',
+    seq: 16,
+    service_type: 1,
+    dest_tc: '東涌(逸東)',
+    eta: '2026-10-10T18:58:03+08:00',
+    eta_seq: 1,
+    rmk_tc: '',
+    ...partial,
+  }
+}
+
+describe('normalizeKmb', () => {
+  const e31 = SERVICES.find((s) => s.id === 'kmb-e31-yt')!
+
+  it('以 (serviceType, dir, seq) 精確定位分站', () => {
+    const rows = [
+      kmbRow({ seq: 16 }),
+      kmbRow({ seq: 15 }),
+      kmbRow({ seq: 16, dir: 'I' }),
+      kmbRow({ seq: 16, service_type: 3 }),
+    ]
+    const got = normalizeKmb(rows, e31, T0)
+    expect(got).toHaveLength(1)
+    expect(got[0].dest).toBe('東涌(逸東)')
+  })
+
+  it('原定班次標為 scheduled；最後班次仍是實時', () => {
+    const rows = [
+      kmbRow({ eta: '2026-10-10T18:58:03+08:00', rmk_tc: '原定班次' }),
+      kmbRow({ eta: '2026-10-10T19:05:00+08:00', rmk_tc: '最後班次' }),
+    ]
+    const got = normalizeKmb(rows, e31, T0)
+    expect(got.map((e) => e.scheduled)).toEqual([true, false])
+    expect(got[1].remark).toBe('最後班次')
+  })
+
+  it('st1/st3 重複時間去重；eta null 剔除', () => {
+    const rows = [
+      kmbRow({ eta: '2026-10-10T18:58:03+08:00' }),
+      kmbRow({ eta: '2026-10-10T18:58:03+08:00' }),
+      kmbRow({ eta: null }),
+      kmbRow({ eta: '唔係時間' }),
+    ]
+    expect(normalizeKmb(rows, e31, T0)).toHaveLength(1)
+  })
+
+  it('相差不足兩分鐘視為同一班次去重', () => {
+    const rows = [
+      kmbRow({ eta: '2026-10-10T18:58:03+08:00' }),
+      kmbRow({ eta: '2026-10-10T18:58:43+08:00' }),
+      kmbRow({ eta: '2026-10-10T19:05:00+08:00' }),
+    ]
+    const got = normalizeKmb(rows, e31, T0)
+    expect(got).toHaveLength(2)
+  })
+
+  it('rowDestOverride 覆寫行標籤（S64X 循環返抵）', () => {
+    const arr = SERVICES.find((s) => s.id === 'kmb-s64x-arr')!
+    const rows = [kmbRow({ route: 'S64X', seq: 28, dest_tc: '機場(循環線)' })]
+    const got = normalizeKmb(rows, arr, T0)
+    expect(got[0].dest).toBe('滿東邨')
+  })
+})
 
 function nlbRow(partial: Partial<NlbEtaRecord>): NlbEtaRecord {
   return {

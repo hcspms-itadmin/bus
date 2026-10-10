@@ -10,7 +10,7 @@ export function OperatorBadge({ operator }: OperatorBadgeProps) {
     <span
       className={styles.badge}
       data-op={operator}
-      aria-label={operator === 'CTB' ? '城巴' : '新大嶼山巴士'}
+      aria-label={operator === 'CTB' ? '城巴' : operator === 'NLB' ? '新大嶼山巴士' : '九巴'}
     >
       {operator}
     </span>

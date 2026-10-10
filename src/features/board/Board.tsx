@@ -15,7 +15,7 @@ export function Board() {
         <ServiceSection snapshots={snapshots} now={now} />
       </main>
       <footer className={styles.footer}>
-        資料來源：香港政府「資料一線通」實時巴士到站（城巴 / 新大嶼山巴士）· 每 30 秒自動更新
+        資料來源：香港政府「資料一線通」實時巴士到站（城巴 / 新大嶼山巴士）＋ 九巴 etabus 實時到站 · 每 30 秒自動更新
       </footer>
     </div>
   )

@@ -1,5 +1,12 @@
-export type Operator = 'CTB' | 'NLB'
+export type Operator = 'CTB' | 'NLB' | 'KMB'
 export type ServiceSection = 'departures' | 'arrivals'
+
+/** 九巴（etabus route-eta）以 (serviceType, dir, seq) 定位分站。 */
+export interface KmbQuery {
+  serviceType: string
+  dir: 'O' | 'I'
+  seq: number
+}
 
 export interface ServiceConfig {
   id: string
@@ -10,6 +17,9 @@ export interface ServiceConfig {
   displayFrom?: string
   stopId: string
   nlbRouteId?: string
+  kmbQueries?: readonly KmbQuery[]
+  /** 覆寫每行顯示的目的地（如 S64X 循環返抵，API dest 仍寫機場） */
+  rowDestOverride?: string
   destFilter: readonly string[]
   remarkHint?: string
 }
@@ -18,6 +28,8 @@ export interface ServiceConfig {
  * 滿東邨實測路線配置（見 docs/api-endpoints.md §2.2）。
  * CTB：以 dest_tc 文字子串收窄（dir 欄位語義與 route-stop 不一致，唔可信賴）。
  * NLB：routeId 已細分方向（88=返滿東邨 / 89=去大橋），無須 dest 過濾。
+ * KMB（etabus，含龍運聯營線）：route-eta 無 stop 欄，以 (serviceType, dir, seq)
+ *   對 route-stop 序號精確定位；st1/st3 重疊班次靠 etaMs 去重。
  */
 export const SERVICES: readonly ServiceConfig[] = [
   {
@@ -100,6 +112,81 @@ export const SERVICES: readonly ServiceConfig[] = [
     remarkHint: '繁忙時段',
   },
   {
+    id: 'kmb-e31-yt',
+    operator: 'KMB',
+    route: 'E31',
+    section: 'departures',
+    displayDest: '東涌（逸東）',
+    stopId: '56925C75ED35CF99',
+    kmbQueries: [{ serviceType: '1', dir: 'O', seq: 16 }],
+    destFilter: ['逸東'],
+  },
+  {
+    id: 'kmb-e31-tw',
+    operator: 'KMB',
+    route: 'E31',
+    section: 'departures',
+    displayDest: '荃灣（愉景新城）',
+    stopId: '90551F12E553D27E',
+    kmbQueries: [{ serviceType: '1', dir: 'I', seq: 3 }],
+    destFilter: ['荃灣'],
+  },
+  {
+    id: 'kmb-e36a-yt',
+    operator: 'KMB',
+    route: 'E36A',
+    section: 'departures',
+    displayDest: '東涌（逸東）',
+    stopId: '56925C75ED35CF99',
+    kmbQueries: [{ serviceType: '1', dir: 'O', seq: 21 }],
+    destFilter: ['逸東'],
+  },
+  {
+    id: 'kmb-e36a-yl',
+    operator: 'KMB',
+    route: 'E36A',
+    section: 'departures',
+    displayDest: '元朗（德業街）',
+    stopId: '90551F12E553D27E',
+    kmbQueries: [{ serviceType: '1', dir: 'I', seq: 3 }],
+    destFilter: ['元朗'],
+  },
+  {
+    id: 'kmb-n31-ap',
+    operator: 'KMB',
+    route: 'N31',
+    section: 'departures',
+    displayDest: '機場（地面運輸中心）',
+    stopId: '56925C75ED35CF99',
+    kmbQueries: [{ serviceType: '1', dir: 'O', seq: 19 }],
+    destFilter: ['機場'],
+    remarkHint: '通宵',
+  },
+  {
+    id: 'kmb-n31-tw',
+    operator: 'KMB',
+    route: 'N31',
+    section: 'departures',
+    displayDest: '荃灣（愉景新城）',
+    stopId: '90551F12E553D27E',
+    kmbQueries: [{ serviceType: '1', dir: 'I', seq: 11 }],
+    destFilter: ['荃灣'],
+    remarkHint: '通宵',
+  },
+  {
+    id: 'kmb-s64x-ap',
+    operator: 'KMB',
+    route: 'S64X',
+    section: 'departures',
+    displayDest: '機場（循環線）',
+    stopId: '90551F12E553D27E',
+    kmbQueries: [
+      { serviceType: '1', dir: 'O', seq: 1 },
+      { serviceType: '3', dir: 'O', seq: 1 },
+    ],
+    destFilter: [],
+  },
+  {
     id: 'nlb-37h-loop',
     operator: 'NLB',
     route: '37H',
@@ -139,6 +226,21 @@ export const SERVICES: readonly ServiceConfig[] = [
     displayFrom: '何文田',
     stopId: '001853',
     destFilter: ['逸東'],
+  },
+  {
+    id: 'kmb-s64x-arr',
+    operator: 'KMB',
+    route: 'S64X',
+    section: 'arrivals',
+    displayDest: '滿東邨',
+    displayFrom: '機場（循環線）',
+    stopId: '90551F12E553D27E',
+    kmbQueries: [
+      { serviceType: '1', dir: 'O', seq: 28 },
+      { serviceType: '3', dir: 'O', seq: 26 },
+    ],
+    rowDestOverride: '滿東邨',
+    destFilter: [],
   },
 ]
 

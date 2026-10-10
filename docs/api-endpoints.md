@@ -34,6 +34,24 @@
 - 實測失敗參數：`stop_id / stopId / stops / ids / stpid / bsi / stop / lang`、path 式、`companyId` 組合 —— **全回 422**。官方 data dictionary（PDF）未標明參數名。
 - **決定：v1 用逐路線查詢（每服務 1 請求），不依賴 batch**。此端點留待後續 Spike。
 
+### 1.4 九巴 KMB（etabus，含龍運聯營線）
+
+> 實測日期：2026-10-10。`Access-Control-Allow-Origin: *`，瀏覽器可直接 fetch。
+> etabus 的 KMB 資料集已包含龍運聯營線（E31/E36A/N31/S64X，`co: "KMB"`），**無須另走 `/lwb/` 路徑**（實測 `/lwb/route` 等全回 422）。
+
+| 用途 | URL |
+| --- | --- |
+| 路線清單 | `https://data.etabus.gov.hk/v1/transport/kmb/route` |
+| 某路線分站清單 | `https://data.etabus.gov.hk/v1/transport/kmb/route-stop/{route}/{outbound\|inbound}/{service_type}` |
+| 分站資料 | `https://data.etabus.gov.hk/v1/transport/kmb/stop/{stop_id}`（stop_id 為 hash，如 `90551F12E553D27E`） |
+| ETA | `https://data.etabus.gov.hk/v1/transport/kmb/route-eta/{route}/{service_type}` |
+
+- route-eta 列欄位與 CTB 同形：`co / route / dir(O|I) / seq / service_type / dest_tc / eta(ISO+08:00，可為 null) / eta_seq / rmk_tc / data_timestamp`，**但無 `stop` 欄**。
+- **分站定位**：以 `(serviceType, dir, seq)` 對 route-stop 序號精確定位（dir O↔outbound、I↔inbound，seq 一致，實測對齊）。
+- **scheduled 判定**：`rmk_tc === '原定班次'`（`rmk_en: 'Scheduled Bus'`）。`rmk_tc: '最後班次'` 仍是實車（顯示為 remark）。
+- **S64X 重複**：st1/st3 特別班次在同站報出**同一班車**（時間相差數十秒），UI 以 120 秒窗口去重。
+- S64X 循環返抵（seq28/st1、seq26/st3）`dest_tc` 仍寫「機場(循環線)」，UI 以 `rowDestOverride: '滿東邨'` 覆寫行標籤。
+
 ## 2. 滿東邨站點與路線鎖定（實測）
 
 ### 2.1 站碼
@@ -47,6 +65,15 @@
 | **310** | 滿東邨巴士總站（NLB） | B6(88 由大橋返)、37H |
 
 - 37M（routeId 82）：NLB 站點清單**不含任何滿東邨站** → 唔入列。
+
+### 2.1b 九巴站碼（etabus hash ID）
+
+| 站碼（hash） | 名稱 | 服務角色 |
+| --- | --- | --- |
+| **56925C75ED35CF99** | 滿東邨 (TC425) | E31 O seq16、E36A O seq21、N31 O seq19（往逸東/東涌/機場方向） |
+| **90551F12E553D27E** | 滿東邨 (TC426) | E31 I seq3、E36A I seq3、N31 I seq11（往荃灣/元朗方向）；S64X 起點 seq1＋終點 seq28/st1、seq26/st3 |
+
+- S64（逸東→機場）：route-stop **不含任何滿東邨站** → 唔入列。
 
 ### 2.2 路線 → (營辦商, stopId, NLB routeId, 目標 dest) 對應表（v1 配置基準）
 
@@ -66,6 +93,15 @@
 | 36X | 迪士尼樂園 | NLB | 309 | **100** | 站點確認；繁忙服務 |
 | 37H | 北大嶼山醫院（循環） | NLB | 310 | **96** | 站點確認 |
 | 37M | —（唔停滿東邨） | NLB | – | 82 | ❌ 剔除 |
+| E31 | 東涌(逸東) | KMB | TC425 | st1 O seq16 | ✅ live |
+| E31 | 荃灣(愉景新城) | KMB | TC426 | st1 I seq3 | ✅ live（含原定班次） |
+| E36A | 東涌(逸東) | KMB | TC425 | st1 O seq21 | ✅ live |
+| E36A | 元朗(德業街) | KMB | TC426 | st1 I seq3 | ✅ live（多為原定班次） |
+| N31 | 機場(地面運輸中心) | KMB | TC425 | st1 O seq19 | 通宵線，日間空 |
+| N31 | 荃灣(愉景新城) | KMB | TC426 | st1 I seq11 | 通宵線，日間空 |
+| S64X | 機場(循環線) | KMB | TC426 | st1+st3 O seq1 | ✅ live（去重後） |
+| S64X（循環返抵） | 滿東邨 | KMB | TC426 | st1 O seq28＋st3 O seq26 | ✅ live（dest 覆寫） |
+| S64 | —（唔停滿東邨） | KMB | – | – | ❌ 剔除 |
 
 ### 2.3 NLB routeId ↔ 路線（`route.php?action=list` 實測）
 
@@ -89,6 +125,11 @@ curl "https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/001363/E11B"
 # NLB 39M @ 309
 curl "https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=estimatedArrivals&routeId=95&stopId=309&language=zh"
 # → estimatedArrivals[]: { estimatedArrivalTime:"2026-10-09 17:29", departed:"1"|"0", noGPS:"1"|"0", routeVariantName, generateTime }
+
+# KMB E31 @ 滿東邨 TC425（往逸東）
+curl "https://data.etabus.gov.hk/v1/transport/kmb/route-eta/E31/1"
+# → data[]: { co:"KMB", dir:"O"|"I", service_type:1, seq, dest_tc, eta(ISO+08:00|null), eta_seq, rmk_tc:""|"原定班次"|"最後班次" }
+#   過濾 dir=O seq=16 即 TC425 班次
 ```
 
 ## 4. 已知缺口 / 待覆核

@@ -1,6 +1,6 @@
-import { CTB_ETA_URL, NLB_ETA_URL, REQUEST_TIMEOUT_MS } from './constants'
-import { CtbEtaResponseSchema, NlbEtaResponseSchema } from './schemas'
-import type { CtbEtaRecord, NlbEtaRecord } from './schemas'
+import { CTB_ETA_URL, KMB_ETA_URL, NLB_ETA_URL, REQUEST_TIMEOUT_MS } from './constants'
+import { CtbEtaResponseSchema, KmbEtaResponseSchema, NlbEtaResponseSchema } from './schemas'
+import type { CtbEtaRecord, KmbEtaRecord, NlbEtaRecord } from './schemas'
 
 export class ApiException extends Error {}
 
@@ -39,4 +39,16 @@ export async function fetchNlbEta(
   const parsed = NlbEtaResponseSchema.safeParse(raw)
   if (!parsed.success) throw new ApiException('NLB ETA 資料格式有誤')
   return parsed.data.estimatedArrivals ?? []
+}
+
+export async function fetchKmbEta(
+  route: string,
+  serviceType: string,
+  signal?: AbortSignal,
+): Promise<KmbEtaRecord[]> {
+  const url = `${KMB_ETA_URL}/${encodeURIComponent(route)}/${encodeURIComponent(serviceType)}`
+  const raw = await fetchJson(url, signal)
+  const parsed = KmbEtaResponseSchema.safeParse(raw)
+  if (!parsed.success) throw new ApiException('KMB ETA 資料格式有誤')
+  return parsed.data.data ?? []
 }

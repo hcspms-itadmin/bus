@@ -24,3 +24,8 @@
   background: var(--color-nlb);
   color: #fff;
 }
+
+.badge[data-op='KMB'] {
+  background: #e1251b;
+  color: #fff;
+}

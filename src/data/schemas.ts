@@ -36,4 +36,32 @@ export const NlbEtaResponseSchema = z.object({
   message: z.string().nullable().optional(),
 })
 
+/**
+ * 九巴（etabus）route-eta 列：欄位與 CTB 幾乎同形，但無 `stop`，
+ * 以 (`service_type`, `dir`, `seq`) 定位分站；`eta` 可為 null（暫無班次）。
+ * `rmk_tc === '原定班次'` 表示預定班次（Scheduled Bus）。
+ */
+export const KmbEtaSchema = z.object({
+  co: z.string().default('KMB'),
+  route: z.string(),
+  dir: z.string(),
+  seq: z.number().int(),
+  service_type: z.union([z.string(), z.number()]),
+  dest_tc: z.string().nullable().optional(),
+  dest_en: z.string().nullable().optional(),
+  dest_sc: z.string().nullable().optional(),
+  eta: z.string().nullable().optional(),
+  eta_seq: z.number().int().nullable().optional(),
+  rmk_tc: z.string().nullable().optional(),
+  rmk_en: z.string().nullable().optional(),
+  rmk_sc: z.string().nullable().optional(),
+  data_timestamp: z.string().nullable().optional(),
+})
+
+export const KmbEtaResponseSchema = z.object({
+  data: z.array(KmbEtaSchema).nullable().optional(),
+})
+
+export type KmbEtaRecord = z.infer<typeof KmbEtaSchema>
+
 export type NlbEtaRecord = z.infer<typeof NlbEtaSchema>
